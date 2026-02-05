@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="6" fill="#9B59B6"/>
+                    <path d="M16 8L24 12V20L16 24L8 20V12L16 8Z" fill="white"/>
+                </svg>
+                <h1>Server Dashboard</h1>
+            </div>
+            <nav>
+                <button class="nav-btn active">Home</button>
+                <button class="nav-btn">Settings</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="welcome-section">
+                <h2>Welcome Back</h2>
+                <p>Quick access to your self-hosted services</p>
+            </section>
+
+            <section class="services-section">
+                <h3>Services</h3>
+                <div class="services-grid" id="servicesGrid">
+                    <!-- Services will be dynamically added here -->
+                </div>
+            </section>
+
+            <section class="stats-section">
+                <h3>System Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💾</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Storage</span>
+                            <span class="stat-value">450GB / 1TB</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <span class="stat-label">CPU Usage</span>
+                            <span class="stat-value">24%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Memory</span>
+                            <span class="stat-value">8.2GB / 16GB</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌐</div>
+                        <div class="stat-info">
+                            <span class="stat-label">Network</span>
+                            <span class="stat-value">↓ 12MB/s</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
