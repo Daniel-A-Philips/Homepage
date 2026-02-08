@@ -1,32 +1,32 @@
 // Service data
 let services = [
-        {
-        icon: '🏠',
-        name: 'Server Home',
-        description: 'Docker and Server Manager',
-        private_url: 'http://localhost:80',
-        public_url: 'https://home.philips-family.net',
+    {
+        icon: "🏠",
+        name: "Server Home",
+        description: "Docker and Server Manager",
+        port: 80,
+        public_url: "https://home.philips-family.net"
     },
     {
-        icon: '🎬',
-        name: 'Stremio',
-        description: 'Streaming Service',
-        private_url: 'http://localhost:8100',
-        public_url: 'https://stream.philips-family.net',
+        icon: "🎬",
+        name: "Stremio",
+        description: "Streaming Service",
+        port: 8100,
+        public_url: "https://stream.philips-family.net"
     },
     {
-        icon: '☁️',
-        name: 'Nextcloud',
-        description: 'File sync and sharing platform',
-        private_url: 'http://localhost:10081',
-        public_url: 'https://cloud.philips-family.net',
+        icon: "☁️",
+        name: "Nextcloud",
+        description: "File sync and sharing platform",
+        port: 10081,
+        public_url: "https://cloud.philips-family.net"
     },
     {
-        icon: '🐋',
-        name: 'Portainer',
-        description: 'Docker container management',
-        private_url: 'http://localhost:9000',
-        public_url: 'https://portainer.philips-family.net',
+        icon: "🐋",
+        name: "Portainer",
+        description: "Docker container management",
+        port: 9000,
+        public_url: "https://portainer.philips-family.net"
     }
 ];
 
@@ -45,7 +45,14 @@ function createServiceCard(service) {
     const card = document.createElement('div');
     card.className = 'service-card';
 
-    const url = ping("http://192.168.1.174:80/images/zimaos-logo-2.svg") ? service.private_url : service.public_url;
+    var url;
+    if (ping("http://192.168.1.174:80/images/zimaos-logo-2.svg")) {
+        url = `localhost:${service.port}`;
+    } else if (ping("http://172.30.0.1/images/zimaos-logo-2.svg")) {
+        url = `172.30.0.1:${service.port}`;
+    } else {
+        url = service.public_url;
+    }
 
     card.onclick = () => window.open(url, '_blank');
 
@@ -128,5 +135,4 @@ function searchServices(query) {
     });
 }
 
-// Export functions for potential future use
 window.searchServices = searchServices;

@@ -3,28 +3,28 @@
         "icon": "🏠",
         "name": "Server Home",
         "description": "Docker and Server Manager",
-        "private_url": "http://localhost:80",
+        "port": 80,
         "public_url": "https://home.philips-family.net"
     },
     {
         "icon": "🎬",
         "name": "Stremio",
         "description": "Streaming Service",
-        "private_url": "http://localhost:8100",
+        "port": 8100,
         "public_url": "https://stream.philips-family.net"
     },
     {
         "icon": "☁️",
         "name": "Nextcloud",
         "description": "File sync and sharing platform",
-        "private_url": "http://localhost:10081",
+        "port": 10081,
         "public_url": "https://cloud.philips-family.net"
     },
     {
         "icon": "🐋",
         "name": "Portainer",
         "description": "Docker container management",
-        "private_url": "http://localhost:9000",
+        "port": 9000,
         "public_url": "https://portainer.philips-family.net"
     }
 ]
