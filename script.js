@@ -1,7 +1,5 @@
-import os from "os";
-
 // Service data
-const services_backup = [
+let services = [
         {
         icon: '🏠',
         name: 'Server Home',
@@ -73,7 +71,6 @@ async function loadServicesFromJSON() {
     } catch (error) {
         console.error('Error loading services:', error);
         console.error('Using fallback services');
-        services = services_backup;
     }
     populateServices();
 
