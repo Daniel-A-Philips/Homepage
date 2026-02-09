@@ -39,10 +39,12 @@ async function ping(url, timeout = 200) {
         const response = await fetch(url, {
             method: 'HEAD',
             signal: controller.signal,
-            cache: 'no-cache'
+            cache: 'no-cache',
+            mode: 'no-cors' // This bypasses CORS but gives limited info
+
         });
         clearTimeout(timeoutId);
-        return response.ok;
+        return true;
     } catch (error) {
         clearTimeout(timeoutId);
         return false;
@@ -56,10 +58,10 @@ async function createServiceCard(service) {
     let url;
 
     // AWAIT the ping calls
-    if (await ping("http://192.168.1.174")) {
-        url = `http://192.168.1.174:${service.port}`;
-    } else if (await ping("http://172.30.0.1")) {
-        url = `http://172.30.0.1:${service.port}`;
+    if (await ping("https://192.168.1.174")) {
+        url = `https://192.168.1.174:${service.port}`;
+    } else if (await ping("https://172.30.0.1")) {
+        url = `https://172.30.0.1:${service.port}`;
     } else if (await ping(service.public_url)) {
         url = service.public_url;
     } else {
@@ -160,8 +162,8 @@ async function findUsableServers() {
     const remote = document.getElementById('Remote');
 
     // AWAIT all ping calls
-    if (await ping("http://192.168.1.174")) home.style.visibility = 'visible';
-    if (await ping("http://172.30.0.1")) zima.style.visibility = 'visible';
+    if (await ping("https://192.168.1.174")) home.style.visibility = 'visible';
+    if (await ping("https://172.30.0.1")) zima.style.visibility = 'visible';
     if (await ping("https://home.philips-family.net")) remote.style.visibility = 'visible';
 }
 
