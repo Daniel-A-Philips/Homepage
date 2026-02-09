@@ -145,4 +145,15 @@ function searchServices(query) {
     });
 }
 
+function findUsableServers() {
+    const home = document.getElementById('Home');
+    const zima = document.getElementById('Zima');
+    const remote = document.getElementById('Remote');
+
+    if( ping("http://192.168.1.174")) home.style.visibility = 'visible';
+    if (ping("http://172.30.0.1")) zima.style.visibility = 'visible';
+    if (ping("https://home.philips-family.net")) remote.style.visibility = 'visible';
+}
+
+findUsableServers();
 window.searchServices = searchServices;

@@ -68,6 +68,17 @@ nav {
     color: #9B59B6;
 }
 
+.nav-label {
+    background: transparent;
+    border: none;
+    color: #b0b0b0;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
 /* Main Content */
 .container {
     max-width: 1400px;

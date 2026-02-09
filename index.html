@@ -18,7 +18,13 @@
             </div>
             <nav>
                 <button class="nav-btn active">Home</button>
-                <button class="nav-btn">Settings</button>
+                <label class="nav-label">Current IP Scheme</label>
+                <select class="nav-btn" id="IP-Select">
+                    <option value="Home" id="Home" style="visibility: hidden">Home Network</option>
+                    <option value="Zima" id="Zima" style="visibility: hidden">Zima Network</option>
+                    <option value="Remote" id="Remote" style="visibility: hidden">Remote Network</option>
+
+                </select>
             </nav>
         </div>
     </header>
