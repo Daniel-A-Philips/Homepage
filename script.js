@@ -30,14 +30,22 @@ let services = [
     }
 ];
 
-function ping(url) {
-     var ImageObject = new Image();
-     ImageObject.src = url; //e.g. logo -- mind the caching, maybe use a dynamic querystring
-     if(ImageObject.height>0){
-       return true;
-     } else {
-       return false;
-     }
+async function ping(url, timeout = 200) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+        const response = await fetch(url, {
+            method: 'HEAD', // Lighter than GET
+            signal: controller.signal,
+            cache: 'no-cache'
+        });
+        clearTimeout(timeoutId);
+        return response.ok; // true if status 200-299
+    } catch (error) {
+        clearTimeout(timeoutId);
+        return false;
+    }
 }
 
 // Function to create service cards
@@ -46,12 +54,14 @@ function createServiceCard(service) {
     card.className = 'service-card';
 
     var url;
-    if (ping("http://192.168.1.174:80/images/zimaos-logo-2.svg")) {
-        url = `localhost:${service.port}`;
-    } else if (ping("http://172.30.0.1/images/zimaos-logo-2.svg")) {
+    if (ping("http://192.168.1.174")) {
+        url = `http://192.168.1.174:${service.port}`;
+    } else if (ping("http://172.30.0.1")) {
         url = `172.30.0.1:${service.port}`;
-    } else {
+    } else if (ping(service.public_url)) {
         url = service.public_url;
+    } else {
+        return "broken"
     }
 
     card.onclick = () => window.open(url, '_blank');
