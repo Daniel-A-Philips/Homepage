@@ -33,7 +33,7 @@ let services = [
 async function ping(url, timeout = 200) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-
+    console.log(`ping ${url}`);
     try {
         const response = await fetch(url, {
             method: 'HEAD', // Lighter than GET
