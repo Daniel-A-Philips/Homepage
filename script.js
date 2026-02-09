@@ -33,40 +33,43 @@ let services = [
 async function ping(url, timeout = 200) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    console.log(`ping ${url}`);
+    console.log(`ping ${url}`); // Fixed: was console.log`ping ${url}`
+
     try {
         const response = await fetch(url, {
-            method: 'HEAD', // Lighter than GET
+            method: 'HEAD',
             signal: controller.signal,
             cache: 'no-cache'
         });
         clearTimeout(timeoutId);
-        return response.ok; // true if status 200-299
+        return response.ok;
     } catch (error) {
         clearTimeout(timeoutId);
         return false;
     }
 }
 
-// Function to create service cards
-function createServiceCard(service) {
+// Function to create service cards - NOW ASYNC
+async function createServiceCard(service) {
     const card = document.createElement('div');
     card.className = 'service-card';
+    let url;
 
-    var url;
-    if (ping("http://192.168.1.174")) {
+    // AWAIT the ping calls
+    if (await ping("http://192.168.1.174")) {
         url = `http://192.168.1.174:${service.port}`;
-    } else if (ping("http://172.30.0.1")) {
-        url = `172.30.0.1:${service.port}`;
-    } else if (ping(service.public_url)) {
+    } else if (await ping("http://172.30.0.1")) {
+        url = `http://172.30.0.1:${service.port}`;
+    } else if (await ping(service.public_url)) {
         url = service.public_url;
     } else {
-        return "broken"
+        return null; // Return null instead of "broken" so we can filter it out
     }
 
     card.onclick = () => window.open(url, '_blank');
 
-    service.status = ping(url) ? 'online' : 'offline'
+    // AWAIT the ping call for status
+    service.status = (await ping(url)) ? 'online' : 'offline';
 
     card.innerHTML = `
         <span class="service-icon">${service.icon}</span>
@@ -77,7 +80,7 @@ function createServiceCard(service) {
             <span>${service.status}</span>
         </div>
     `;
-    
+
     return card;
 }
 
@@ -89,19 +92,25 @@ async function loadServicesFromJSON() {
         console.error('Error loading services:', error);
         console.error('Using fallback services');
     }
-    populateServices();
-
+    await populateServices(); // AWAIT this
 }
 
-// Populate services grid
-function populateServices() {
+// Populate services grid - NOW ASYNC
+async function populateServices() {
     const servicesGrid = document.getElementById('servicesGrid');
-    servicesGrid.innerHTML = ''; // Clear existing cards
-    services.forEach(service => {
-        servicesGrid.appendChild(createServiceCard(service));
+    servicesGrid.innerHTML = '';
+
+    // Use Promise.all to create all cards in parallel
+    const cardPromises = services.map(service => createServiceCard(service));
+    const cards = await Promise.all(cardPromises);
+
+    // Append only valid cards (filter out null)
+    cards.forEach(card => {
+        if (card) {
+            servicesGrid.appendChild(card);
+        }
     });
 }
-
 
 // Add click handlers to navigation buttons
 function initNavigation() {
@@ -118,11 +127,10 @@ function initNavigation() {
 document.addEventListener('DOMContentLoaded', () => {
     loadServicesFromJSON();
     initNavigation();
-    
+
     // Add keyboard navigation
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            // Could be used to close modals or return to home
             console.log('ESC pressed');
         }
     });
@@ -132,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function searchServices(query) {
     const cards = document.querySelectorAll('.service-card');
     const searchTerm = query.toLowerCase();
-    
+
     cards.forEach(card => {
         const name = card.querySelector('.service-name').textContent.toLowerCase();
         const description = card.querySelector('.service-description').textContent.toLowerCase();
-        
+
         if (name.includes(searchTerm) || description.includes(searchTerm)) {
             card.style.display = 'block';
         } else {
@@ -145,15 +153,18 @@ function searchServices(query) {
     });
 }
 
-function findUsableServers() {
+// NOW ASYNC
+async function findUsableServers() {
     const home = document.getElementById('Home');
     const zima = document.getElementById('Zima');
     const remote = document.getElementById('Remote');
 
-    if( ping("http://192.168.1.174")) home.style.visibility = 'visible';
-    if (ping("http://172.30.0.1")) zima.style.visibility = 'visible';
-    if (ping("https://home.philips-family.net")) remote.style.visibility = 'visible';
+    // AWAIT all ping calls
+    if (await ping("http://192.168.1.174")) home.style.visibility = 'visible';
+    if (await ping("http://172.30.0.1")) zima.style.visibility = 'visible';
+    if (await ping("https://home.philips-family.net")) remote.style.visibility = 'visible';
 }
 
-findUsableServers();
+findUsableServers(); // This will run but won't block
+
 window.searchServices = searchServices;
