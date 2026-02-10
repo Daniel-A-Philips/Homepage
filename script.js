@@ -30,10 +30,9 @@ let services = [
     }
 ];
 
-async function ping(url, timeout = 200) {
+async function ping(url, timeout = 200, tries=0) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    console.log(`ping ${url}`); // Fixed: was console.log`ping ${url}`
 
     try {
         const response = await fetch(url, {
@@ -47,7 +46,11 @@ async function ping(url, timeout = 200) {
         return true;
     } catch (error) {
         clearTimeout(timeoutId);
-        return false;
+        if (tries > 0) {
+            console.log(`failed to ping ${url}`);
+            return false;
+        }
+        else return ping(url, timeout, tries++);
     }
 }
 
@@ -157,9 +160,6 @@ function searchServices(query) {
 
 // NOW ASYNC
 async function findUsableServers() {
-    const home = document.getElementById('Home');
-    const zima = document.getElementById('Zima');
-    const remote = document.getElementById('Remote');
     const dropdown = document.getElementById('IP-Select');
     // AWAIT all ping calls
     if (await ping("http://192.168.1.174")) {
