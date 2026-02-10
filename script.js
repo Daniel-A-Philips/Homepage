@@ -30,6 +30,11 @@ let services = [
     }
 ];
 
+const dropdown = document.getElementById("IP-Select");
+dropdown.addEventListener("change", (event) => {
+    loadServicesFromJSON();
+})
+
 async function ping(url, timeout = 200, tries=0) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -54,19 +59,23 @@ async function ping(url, timeout = 200, tries=0) {
     }
 }
 
+function checkIfNetworkExists(network) {
+    return !(document.getElementById(network) === null);
+}
+
 // Function to create service cards - NOW ASYNC
 async function createServiceCard(service) {
     const card = document.createElement('div');
     card.className = 'service-card';
     let url;
-
+    const network = document.getElementById("IP-Select").value;
     // AWAIT the ping calls
-    if (await ping("http://192.168.1.174")) {
+    if (network === "Home") {
         url = `http://192.168.1.174:${service.port}`;
-    } else if (await ping("http://172.30.0.1")) {
-        url = `http://172.30.0.1:${service.port}`;
-    } else if (await ping(service.public_url)) {
+    } else if (network === "Remote") {
         url = service.public_url;
+    } else if (network === "Zima") {
+        url = `http://172.30.0.1:${service.port}`;
     } else {
         return null; // Return null instead of "broken" so we can filter it out
     }
