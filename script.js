@@ -41,11 +41,11 @@ async function createServiceCard(service) {
     const network = document.getElementById("IP-Select").value;
     // AWAIT the ping calls
     if (network === "Home") {
-        url = `http://zimaos.local:${service.port}`;
+        url = `https://zimaos.local:${service.port}`;
     } else if (network === "Remote") {
         url = service.public_url;
     } else if (network === "Zima") {
-        url = `http://172.30.0.1:${service.port}`;
+        url = `https://172.30.0.1:${service.port}`;
     } else {
         return null; // Return null instead of "broken" so we can filter it out
     }
@@ -141,14 +141,14 @@ function searchServices(query) {
 async function findUsableServers() {
     const dropdown = document.getElementById('IP-Select');
     // AWAIT all ping calls
-    if (await ping("http://zimaos.local")) {
+    if (await ping("https://zimaos.local")) {
         let option = document.createElement('option');
         option.text = "Home Network";
         option.value = "Home";
         option.id = "Home"
         dropdown.add(option)
     }
-    if (await ping("http://172.30.0.1")) {
+    if (await ping("https://172.30.0.1")) {
         let option = document.createElement('option');
         option.text = "Zima Network";
         option.value = "Zima";
