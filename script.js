@@ -1,34 +1,4 @@
-// Service data
-let services = [
-    {
-        icon: "🏠",
-        name: "Server Home",
-        description: "Docker and Server Manager",
-        port: 80,
-        public_url: "https://home.philips-family.net"
-    },
-    {
-        icon: "🎬",
-        name: "Stremio",
-        description: "Streaming Service",
-        port: 8100,
-        public_url: "https://stream.philips-family.net"
-    },
-    {
-        icon: "☁️",
-        name: "Nextcloud",
-        description: "File sync and sharing platform",
-        port: 10081,
-        public_url: "https://cloud.philips-family.net"
-    },
-    {
-        icon: "🐋",
-        name: "Portainer",
-        description: "Docker container management",
-        port: 9000,
-        public_url: "https://portainer.philips-family.net"
-    }
-];
+let services;
 
 const dropdown = document.getElementById("IP-Select");
 dropdown.addEventListener("change", (event) => {
@@ -51,11 +21,11 @@ async function ping(url, timeout = 200, tries=0) {
         return true;
     } catch (error) {
         clearTimeout(timeoutId);
-        if (tries > 0) {
+        if (tries > 5) {
             console.log(`failed to ping ${url}`);
             return false;
         }
-        else return ping(url, timeout, tries++);
+        else return ping(url, timeout, tries += 1);
     }
 }
 
@@ -71,7 +41,7 @@ async function createServiceCard(service) {
     const network = document.getElementById("IP-Select").value;
     // AWAIT the ping calls
     if (network === "Home") {
-        url = `http://192.168.1.174:${service.port}`;
+        url = `http://zimaos.local:${service.port}`;
     } else if (network === "Remote") {
         url = service.public_url;
     } else if (network === "Zima") {
@@ -171,7 +141,7 @@ function searchServices(query) {
 async function findUsableServers() {
     const dropdown = document.getElementById('IP-Select');
     // AWAIT all ping calls
-    if (await ping("http://192.168.1.174")) {
+    if (await ping("http://zimaos.local")) {
         let option = document.createElement('option');
         option.text = "Home Network";
         option.value = "Home";

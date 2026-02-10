@@ -26,5 +26,12 @@
         "description": "Docker container management",
         "port": 9000,
         "public_url": "https://portainer.philips-family.net"
+    },
+    {
+        "icon": "\uD83D\uDCDF",
+        "name": "Terminal",
+        "description": "Root Terminal ",
+        "port": 7681,
+        "public_url": "https://terminal.philips-family.net"
     }
 ]
