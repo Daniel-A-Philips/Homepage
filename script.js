@@ -58,10 +58,10 @@ async function createServiceCard(service) {
     let url;
 
     // AWAIT the ping calls
-    if (await ping("https://192.168.1.174")) {
-        url = `https://192.168.1.174:${service.port}`;
-    } else if (await ping("https://172.30.0.1")) {
-        url = `https://172.30.0.1:${service.port}`;
+    if (await ping("http://192.168.1.174")) {
+        url = `http://192.168.1.174:${service.port}`;
+    } else if (await ping("http://172.30.0.1")) {
+        url = `http://172.30.0.1:${service.port}`;
     } else if (await ping(service.public_url)) {
         url = service.public_url;
     } else {
@@ -160,11 +160,29 @@ async function findUsableServers() {
     const home = document.getElementById('Home');
     const zima = document.getElementById('Zima');
     const remote = document.getElementById('Remote');
-
+    const dropdown = document.getElementById('IP-Select');
     // AWAIT all ping calls
-    if (await ping("https://192.168.1.174")) home.style.visibility = 'visible';
-    if (await ping("https://172.30.0.1")) zima.style.visibility = 'visible';
-    if (await ping("https://home.philips-family.net")) remote.style.visibility = 'visible';
+    if (await ping("http://192.168.1.174")) {
+        let option = document.createElement('option');
+        option.text = "Home Network";
+        option.value = "Home";
+        option.id = "Home"
+        dropdown.add(option)
+    }
+    if (await ping("http://172.30.0.1")) {
+        let option = document.createElement('option');
+        option.text = "Zima Network";
+        option.value = "Zima";
+        option.id = "Zima"
+        dropdown.add(option)
+    }
+    if (await ping("https://home.philips-family.net")) {
+        let option = document.createElement('option');
+        option.text = "Remote Network";
+        option.value = "Remote";
+        option.id = "Remote"
+        dropdown.add(option)
+    }
 }
 
 findUsableServers(); // This will run but won't block
