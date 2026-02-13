@@ -41,11 +41,11 @@ async function createServiceCard(service) {
     const network = document.getElementById("IP-Select").value;
     // AWAIT the ping calls
     if (network === "Home") {
-        url = `https://zimaos.local:${service.port}`;
+        url = `http://zimaos.local:${service.port}`;
     } else if (network === "Remote") {
         url = service.public_url;
     } else if (network === "Zima") {
-        url = `https://172.30.0.1:${service.port}`;
+        url = `http://172.30.0.1:${service.port}`;
     } else {
         return null; // Return null instead of "broken" so we can filter it out
     }
@@ -108,8 +108,9 @@ function initNavigation() {
 }
 
 // Initialize the page
-document.addEventListener('DOMContentLoaded', () => {
-    loadServicesFromJSON();
+document.addEventListener('DOMContentLoaded', async () => {
+    await findUsableServers();  // Wait for network detection FIRST
+    loadServicesFromJSON();     // THEN load services
     initNavigation();
 
     // Add keyboard navigation
@@ -137,33 +138,31 @@ function searchServices(query) {
     });
 }
 
-// NOW ASYNC
+// NOW ASYNC - pings run in parallel for faster detection
 async function findUsableServers() {
     const dropdown = document.getElementById('IP-Select');
-    // AWAIT all ping calls
-    if (await ping("https://zimaos.local")) {
-        let option = document.createElement('option');
-        option.text = "Home Network";
-        option.value = "Home";
-        option.id = "Home"
-        dropdown.add(option)
-    }
-    if (await ping("https://172.30.0.1")) {
-        let option = document.createElement('option');
-        option.text = "Zima Network";
-        option.value = "Zima";
-        option.id = "Zima"
-        dropdown.add(option)
-    }
-    if (await ping("https://home.philips-family.net")) {
-        let option = document.createElement('option');
-        option.text = "Remote Network";
-        option.value = "Remote";
-        option.id = "Remote"
-        dropdown.add(option)
-    }
+
+    const networks = [
+        { url: "http://zimaos.local", text: "Home Network", value: "Home" },
+        { url: "http://172.30.0.1", text: "Zima Network", value: "Zima" },
+        { url: "https://home.philips-family.net", text: "Remote Network", value: "Remote" },
+    ];
+
+    const results = await Promise.all(
+        networks.map(async (net) => ({ ...net, reachable: await ping(net.url) }))
+    );
+
+    results.forEach((net) => {
+        if (net.reachable) {
+            let option = document.createElement('option');
+            option.text = net.text;
+            option.value = net.value;
+            option.id = net.value;
+            dropdown.add(option);
+        }
+    });
 }
 
-findUsableServers(); // This will run but won't block
+// findUsableServers is now called inside DOMContentLoaded
 
 window.searchServices = searchServices;
